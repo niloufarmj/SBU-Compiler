@@ -5,7 +5,7 @@ import java.util.Map;
 
 %%
 %public
-%class Laxer
+%class PreScanner
 %unicode
 %standalone
 
