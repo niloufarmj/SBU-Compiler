@@ -15,12 +15,14 @@ do
     output_filename="$filename.out"
     report_filename="$filename.report.txt"
     echo "Running Test $filename -------------------------------------"
+    javac PreScanner.java
     javac Main.java
     if [ $? -eq 1 ]; then
         echo "Code did not Compiler"
     else
         echo "Core compiled successfuly"
-        java Main -i $filelist -o $output_filename
+        java PreScanner -i $filelist
+        java Laxer -i $filelist -o $output_filename
         if [ $? -eq 0 ]; then
             echo "Code Executed Successfuly!"
             if command -v python3; then

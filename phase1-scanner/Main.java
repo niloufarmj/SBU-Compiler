@@ -16,6 +16,7 @@ public class Main {
         createFile(outputPath);
         createFile(reportPath);
 
+
         String[] lines = {
                 "class",
                 "T_ID Program",

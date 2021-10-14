@@ -731,7 +731,7 @@ try{
 */    try{
         input.trim();
         String[] parts= input.split("/");
-        String newInput= parts[0]+"/"+"PreScannedTests"+"/"+parts[2];
+        String newInput= "PreScannedTests"+"/"+parts[1];
         File file = new File(newInput);
         file.createNewFile();
         FileWriter fileWriter= new FileWriter(file);
@@ -741,8 +741,8 @@ try{
       }catch (Exception ex){
         System.out.println(ex.toString());
       }
-      System.out.println(out.toString());
-      System.out.println(input);
+      //System.out.println(out.toString());
+      //System.out.println(input);
 
 
     }
@@ -1187,6 +1187,7 @@ try{
    *               the scanner on.
    */
   public static void main(String[] argv) {
+    argv[0]= "tests/"+argv[0];
     InputFileName = argv[0];
     if (argv.length == 0) {
       System.out.println("Usage : java PreScanner [ --encoding <name> ] <inputfile(s)>");
@@ -1205,7 +1206,7 @@ try{
           return;
         }
       }
-      for (int i = firstFilePos; i < argv.length; i++) {
+      for (int i = firstFilePos; i < 1; i++) {
         PreScanner scanner = null;
         try {
           java.io.FileInputStream stream = new java.io.FileInputStream(argv[i]);
