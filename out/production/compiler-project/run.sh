@@ -16,13 +16,13 @@ do
     report_filename="$filename.report.txt"
     echo "Running Test $filename -------------------------------------"
     javac PreScanner.java
-    javac Main.java
+    javac Laxer.java
     if [ $? -eq 1 ]; then
         echo "Code did not Compiler"
     else
         echo "Core compiled successfuly"
-        java PreScanner -i $filelist
-        java Laxer -i $filelist -o $output_filename
+        java PreScanner "$filename.in"
+        java Laxer  $filelist  $output_filename
         if [ $? -eq 0 ]; then
             echo "Code Executed Successfuly!"
             if command -v python3; then
@@ -36,7 +36,7 @@ do
             else
                 ((NUMBER_OF_FAILED++))
                 echo "---- test failed !"
-            fi 
+            fi
             echo
         else
             echo "Code did not execute successfuly!"
@@ -49,4 +49,3 @@ done
 
 echo "Passed : $NUMBER_OF_PASSED"
 echo "Failed : $NUMBER_OF_FAILED"
-

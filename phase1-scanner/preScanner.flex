@@ -50,7 +50,7 @@ ExpoFloatNumber = {FloatNumber}"E"("-"|"+")?{Digit}+
 IntLiteral = ({Digit}+) | {HexNumber}
 DoubleLiteral = {FloatNumber}|{ExpoFloatNumber} //?
 BooleanLiteral = "false"|"true"
-StringLiteral = \"[^(\\n|\\r)]~\" //?
+
 
 //id
 Identifier = [a-zA-Z][a-zA-Z0-9_]*
@@ -59,7 +59,7 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 DefinedWord = {Identifier}
 DefinedWordValue = {NoneBreakChar}+
 Definition="define"{WhiteSpace}+{DefinedWord}{WhiteSpace}+{DefinedWordValue}
-
+%state STRING
 %%
 
 <YYINITIAL>{
@@ -145,7 +145,7 @@ Definition="define"{WhiteSpace}+{DefinedWord}{WhiteSpace}+{DefinedWordValue}
     {BooleanLiteral}    {out.append(yytext());}
     {IntLiteral}    {out.append(yytext());}
     {DoubleLiteral}    {out.append(yytext());}
-    {StringLiteral}    {out.append(yytext());}
+
 
     //Identifier detect action
     {Identifier}         {if(definedMap.containsKey(yytext())){
@@ -157,4 +157,19 @@ Definition="define"{WhiteSpace}+{DefinedWord}{WhiteSpace}+{DefinedWordValue}
 
     //Comment detect action
     {Comment}            {out.append(yytext());}
+     "\""                    {yybegin(STRING); out.append(yytext());}
+}
+<STRING> {
+  "\""    {
+    out.append(yytext());
+    yybegin(YYINITIAL);
+
+    //out.append("T_STRINGLITERAL "+ string+ yytext());
+    }
+
+   "\\\"" {out.append(yytext());}
+
+
+
+   .      {out.append(yytext()) ;}
 }
