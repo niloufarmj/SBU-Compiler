@@ -33,7 +33,7 @@ public class Main {
             scanner = new Lexer(reader);
             while (!scanner.zzAtEOF) scanner.yylex();
 
-            //System.out.println(scanner.out.toString());
+            //.out.println(scanner.out.toString());
             return scanner.out.toString();
         } catch (Exception e) {
             System.out.println("Unexpected exception:");

@@ -710,7 +710,7 @@ public class Lexer {
       zzEOFDone = true;
     
 
-    System.out.println(out.toString());
+    //System.out.println(out.toString());
 
     }
   }

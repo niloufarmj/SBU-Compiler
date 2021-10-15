@@ -33,19 +33,19 @@ Digit= [0-9]
 HexDigit=[a-f A-F 0-9]
 
 //Numbers
-HexNumber = ("0x"|"0X") {HexDigit}+ //?
+HexNumber = ("0x"|"0X") {HexDigit}+
 FloatNumber = {Digit}+ "." + {Digit}*
 ExpoFloatNumber = {FloatNumber}"E"("-"|"+")?{Digit}+
 
 //Literals
 IntLiteral = ({Digit}+) | {HexNumber}
-DoubleLiteral = {FloatNumber}|{ExpoFloatNumber} //?
+DoubleLiteral = {FloatNumber}|{ExpoFloatNumber}
 BooleanLiteral = "false"|"true"
 
 
 //id
 Identifier = [a-zA-Z][a-zA-Z0-9_]*
-%state STRING,COMMENT
+%state STRING
 %%
 
 <YYINITIAL>{
@@ -79,8 +79,7 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
     "void"               {out.append("void\n");}
     "while"              {out.append("while\n");}
 
-    "false"              {out.append("T_BOOLEANLITERAL false\n");}
-    "true"               {out.append("T_BOOLEANLITERAL true\n");}
+
 
 	"+"					 {out.append("+\n");}
 	"-"			    	 {out.append("-\n");}

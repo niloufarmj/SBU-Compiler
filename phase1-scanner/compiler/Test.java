@@ -10,7 +10,7 @@ public class Test {
 //        File file2 = new File("C:\\Users\\dell\\IdeaProjects\\compiler-project\\phase1-scanner\\tests\\t14-macro2.in");
 //        String string2=Main.run(file2);
         /* dshuisdhuihdsu/*fuihfuahuhd */
-        File file3 = new File("C:\\Users\\dell\\IdeaProjects\\compiler-project\\phase1-scanner\\tests\\t01-id1.in");
+        File file3 = new File("C:\\Users\\dell\\IdeaProjects\\compiler-project\\phase1-scanner\\tests\\define.in");
         String string3=Main.run(file3);
 
 
