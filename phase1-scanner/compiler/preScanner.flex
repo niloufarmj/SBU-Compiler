@@ -51,7 +51,6 @@ IntLiteral = ({Digit}+) | {HexNumber}
 DoubleLiteral = {FloatNumber}|{ExpoFloatNumber} //?
 BooleanLiteral = "false"|"true"
 
-
 //id
 Identifier = [a-zA-Z][a-zA-Z0-9_]*
 
@@ -126,7 +125,8 @@ Definition="define"{WhiteSpace}+{DefinedWord}{WhiteSpace}+{DefinedWordValue}
 	"}"					 {out.append("}");}
 
     // definition
-    {Definition} {
+    {Definition}
+      {
           String definitionLine = yytext();
           definitionLine = definitionLine.trim();
           String[] newStr = definitionLine.split("\\s+");
@@ -143,33 +143,30 @@ Definition="define"{WhiteSpace}+{DefinedWord}{WhiteSpace}+{DefinedWordValue}
 
     //Literal detect action
     {BooleanLiteral}    {out.append(yytext());}
-    {IntLiteral}    {out.append(yytext());}
-    {DoubleLiteral}    {out.append(yytext());}
+    {IntLiteral}        {out.append(yytext());}
+    {DoubleLiteral}     {out.append(yytext());}
 
 
     //Identifier detect action
-    {Identifier}         {if(definedMap.containsKey(yytext())){
+    {Identifier}
+      {
+          if (definedMap.containsKey(yytext())){
             out.append(definedMap.get(yytext()));
-      }else{out.append(yytext());}}
+          } else {out.append(yytext());}
+      }
 
     //WhiteSpace detect action
-    {WhiteSpace}         {out.append(yytext());}
+    {WhiteSpace}        {out.append(yytext());}
 
     //Comment detect action
-    {Comment}            {out.append(yytext());}
-     "\""                    {yybegin(STRING); out.append(yytext());}
+    {Comment}           {out.append(yytext());}
+
+    //String detect action
+     "\""               {yybegin(STRING); out.append(yytext());}
 }
+
 <STRING> {
-  "\""    {
-    out.append(yytext());
-    yybegin(YYINITIAL);
-
-    //out.append("T_STRINGLITERAL "+ string+ yytext());
-    }
-
-   "\\\"" {out.append(yytext());}
-
-
-
-   .      {out.append(yytext()) ;}
+    "\""                {out.append(yytext());yybegin(YYINITIAL);}
+    "\\\""              {out.append(yytext());}
+    .                   {out.append(yytext());}
 }

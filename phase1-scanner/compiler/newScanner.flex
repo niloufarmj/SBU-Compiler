@@ -8,8 +8,8 @@ import  java.io.IOException;
 
 %{
     StringBuffer out = new StringBuffer();
-   StringBuilder string = new StringBuilder();
-   String value;
+    StringBuilder string = new StringBuilder();
+    String value;
 %}
 
 %eof{
@@ -111,12 +111,12 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 	"}"					 {out.append("}\n");}
 
     //Literal detect action
-    {BooleanLiteral}    {out.append("T_BOOLEANLITERAL "+ yytext()+"\n");}
-    {IntLiteral}    {out.append("T_INTLITERAL "+ yytext()+"\n");}
-    {DoubleLiteral}    {out.append("T_DOUBLELITERAL "+ yytext()+"\n");}
+    {BooleanLiteral}     {out.append("T_BOOLEANLITERAL "+ yytext()+"\n");}
+    {IntLiteral}         {out.append("T_INTLITERAL "+ yytext()+"\n");}
+    {DoubleLiteral}      {out.append("T_DOUBLELITERAL "+ yytext()+"\n");}
 
     //Identifier detect action
-    {Identifier}         { out.append("T_ID " + yytext() +"\n"); }
+    {Identifier}         {out.append("T_ID " + yytext() +"\n");}
 
     //WhiteSpace detect action
     {WhiteSpace}         {/*ignore*/}
@@ -124,26 +124,17 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
     //Comment detect action
     {Comment}            {/*ignore*/}
 
-    "\""                    {yybegin(STRING); string.append( yytext());}
-
-
+    //String detect action
+    "\""                 {yybegin(STRING); string.append(yytext());}پ
 }
 
 <STRING> {
-  "\""    {
-    yybegin(YYINITIAL);
-    out.append("T_STRINGLITERAL ");
-    out.append(string);
-    string.delete(0,string.length());
-    out.append(yytext()+"\n");
-
-    //out.append("T_STRINGLITERAL "+ string+ yytext());
+    "\""    {
+        yybegin(YYINITIAL);
+        out.append("T_STRINGLITERAL " + string.toString() + yytext() + "\n");
+        string.delete(0,string.length());
     }
-
-   "\\\"" {string.append(yytext());}
-
-
-
-   .      {string.append(yytext()) ;}
+   "\\\""                {string.append(yytext());}
+   .                     {string.append(yytext());}
 }
 
