@@ -26,6 +26,7 @@ public class Main {
         }
         //PreScanner preScanner = new PreScanner(new FileReader(inputFile));
         //new FileWriter(inputFile).write(preScanner.out.toString());
+
         Lexer scanner = null;
         try {
             java.io.FileInputStream stream = new java.io.FileInputStream(inputFile);

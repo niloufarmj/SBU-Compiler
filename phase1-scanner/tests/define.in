@@ -1,3 +1,4 @@
-define x abc
-y="x"
+
+y="abc"
+
 z="xt"

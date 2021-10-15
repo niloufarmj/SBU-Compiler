@@ -9,12 +9,12 @@ import  java.io.IOException;
 %{
     StringBuffer out = new StringBuffer();
     StringBuilder string = new StringBuilder();
-    String value;
+
 %}
 
 %eof{
 
-    System.out.println(out.toString());
+    //System.out.println(out.toString());
 
 %eof}
 
@@ -35,7 +35,7 @@ HexDigit=[a-f A-F 0-9]
 //Numbers
 HexNumber = ("0x"|"0X") {HexDigit}+
 FloatNumber = {Digit}+ "." + {Digit}*
-ExpoFloatNumber = {FloatNumber}"E"("-"|"+")?{Digit}+
+ExpoFloatNumber = {FloatNumber}("E"|"e")("-"|"+")?{Digit}+
 
 //Literals
 IntLiteral = ({Digit}+) | {HexNumber}
@@ -45,6 +45,8 @@ BooleanLiteral = "false"|"true"
 
 //id
 Identifier = [a-zA-Z][a-zA-Z0-9_]*
+
+//States
 %state STRING
 %%
 
@@ -125,7 +127,7 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
     {Comment}            {/*ignore*/}
 
     //String detect action
-    "\""                 {yybegin(STRING); string.append(yytext());}پ
+    "\""                 {yybegin(STRING); string.append(yytext());}
 }
 
 <STRING> {
