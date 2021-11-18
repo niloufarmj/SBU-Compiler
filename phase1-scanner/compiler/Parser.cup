@@ -15,11 +15,11 @@ init with {::}
 
 //Reserved Words:
 terminal integer, double, boolean, string, void;
-terminal Class, interface, implements, extends;
+terminal CLASS, IMPORT, function, line;
 terminal for, while, if, else, break, continue;
 terminal return, new, this, null, newarray;
 terminal readinteger, readline, print, dtoi, itod, btoi, itob;
-terminal private, protected, public;
+terminal private, public;
 
 
 //Relational Symbols:
@@ -31,198 +31,193 @@ terminal and, or, not;
 //Arithmitic symbols:
 terminal div, mul, add, sub, mod;
 
+//Assignment Symbols
+terminal assign, assignAdd, assignSub, assignMul, assignDiv;
+
 //Other Symbols:
-terminal assign, semicolon, comma, leftbracket, rihgtbracket;
+terminal semicolon, comma, leftbracket, rihgtbracket;
 terminal dot, leftparanthesis, rightparanthesis, leftcurly, rightcurly;
 
 //Identifier:
-terminal identifier;
+terminal identifier, define;
 
 //Constants:
-terminal intconst, hexconst, doubleconst, stringconst, true, false;
+terminal intconst, doubleconst, stringconst, booleanconst;
 
 
 /* Non terminals */
 
-nonterminal program;
+nonterminal Program, Macro;
 
 // declarations and types
-nonterminal decl, variableDecl, functionDecl, classDecl, interfaceDecl;
+nonterminal Decl, VariableDecl, FunctionDecl, ClassDecl;
 
-nonterminal variableDecl_plus;
-// define variable
-nonterminal variable;
+// define Variable
+nonterminal Variable;
+
 // types of definitions except void
-nonterminal type;
+nonterminal Type;
+
 // args of functions
-nonterminal formals;
+nonterminal Formals;
+
 //statement block
-nonterminal stmtBlock;
+nonterminal StatementBlock;
+
 // methods and variables in class
-nonterminal field;
-nonterminal field_plus;
-//public or private of protected
-nonterminal accessMode;
-//protoypes in interface
-nonterminal prototype;
-nonterminal prototype_plus;
-// id1, id2, .... (minimum 1 IDENTIFIER)
-nonterminal id_plus;
+nonterminal Field;
+
+//public or private
+nonterminal AccessMode;
+
 //statement
-nonterminal stmt;
-nonterminal stmt_plus;
-//IF and While and for
-nonterminal ifStmt , whileStmt , forStmt;
-// break continue return print
-nonterminal breakStmt , continueStmt ,returnStmt ,printStmt;
+nonterminal Statement;
+nonterminal IfStatement, WhileStatement, ForStatement;
+nonterminal BreakStatement, ContinueStatement, ReturnStatement ,PrintStatement;
+
 //expressions
-nonterminal expr;
-nonterminal expr_plus;
+nonterminal Expression;
+nonterminal LValue, Constant, Call, Actuals;
 
-nonterminal lValue;
-
-nonterminal constant;
-
-nonterminal call;
-
-nonterminal actuals;
-
-
+//plus
+nonterminal DeclPlus, MacroPlus, ExpressionPlus, StatementPlus
+            , IdPlus, FieldPlus, VariableDeclPlus, VariablePlus;
 
 /**/
 
 /* precedence  */
+precedence left leftbracker;
 precedence left comma;
-precedence nonassoc assign;
-precedence left and, or ;
+precedence left assign, assignAdd, assignSub, assignMul, assignSub;
+precedence left or;
+precedence left and;
 precedence left equal, notequal;
-precedence left less, lessequal, greater, greaterequal;
+precedence left less, greater, lessequal, greaterequal;
 precedence left add, sub;
 precedence left mul, div, mod;
-precedence right not;
-precedence right leftparanthesis, rightparanthesis, leftbracket, rihgtbracket;
+precedence left not;
+precedence left leftparanthesis, rightparanthesis, dot;
 /**/
 
-start with program;
+start with Program;
 
-program  ::= program decl
-           | decl;
+Program  ::= DeclPlus
+           | MacroPlus DeclPlus;
 
-decl ::= variableDecl
-       | functionDecl
-       | classDecl
-       | interfaceDecl ;
+Decl ::= VariableDecl
+       | FunctionDecl
+       | ClassDecl;
 
-variableDecl ::= variable SEMICOLON;
+DeclPlus ::= DeclPlus Decl
+           | Decl;
 
-variableDecl_plus ::= variableDecl_plus variableDecl
-                    | variableDecl;
+Macro ::= IMPORT stringconst
+        | define IdPlus
+        | define;
 
-variable ::= type IDENTIFIER;
+MacroPlus ::= MacroPlus Macro
+            | Macro;
 
-type ::= INTEGER
-       | DOUBLE
-       | BOOLEAN
-       | STRING
-       | IDENTIFIER
-       | type LRBRACK;
+IdPlus ::= identifier
+         | IdPlus identifier;
 
-functionDecl ::= type IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS stmtBlock
-               | VOID IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS stmtBlock
-               | type IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS stmtBlock
-               | VOID IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS stmtBlock;
+VariableDecl ::= Variable semicolon;
 
-formals ::=  variable COMMA formals
-           | variable  ;
+VariableDeclPlus ::= VariableDeclPlus VariableDecl
+                    | VariableDecl;
 
-classDecl ::= CLASS IDENTIFIER LEFTCURLY field_plus  RIGHTCURLY
-            | CLASS IDENTIFIER EXTENDS IDENTIFIER LEFTCURLY field_plus RIGHTCURLY
-            | CLASS IDENTIFIER IMPLEMENTS id_plus  LEFTCURLY field_plus  RIGHTCURLY
-            | CLASS IDENTIFIER EXTENDS IDENTIFIER IMPLEMENTS id_plus LEFTCURLY field_plus RIGHTCURLY
-            | CLASS IDENTIFIER LEFTCURLY RIGHTCURLY
-            | CLASS IDENTIFIER EXTENDS IDENTIFIER LEFTCURLY RIGHTCURLY
-            | CLASS IDENTIFIER IMPLEMENTS id_plus  LEFTCURLY RIGHTCURLY
-            | CLASS IDENTIFIER EXTENDS IDENTIFIER IMPLEMENTS id_plus LEFTCURLY RIGHTCURLY;
+Variable ::= Type identifier;
 
-id_plus ::= IDENTIFIER
-          | IDENTIFIER COMMA id_plus ;
+Type ::= integer
+       | double
+       | boolean
+       | string
+       | identifier
+       | Type leftbracket rihgtbracket;
 
-field_plus ::= field_plus field
-             | field;
+FunctionDecl ::= Type identifier leftparanthesis Formals rightparanthesis StatementBlock
+               | void identifier leftparanthesis Formals rightparanthesis StatementBlock;
 
-field ::= accessMode variableDecl
-        | variableDecl
-        | accessMode functionDecl
-        | functionDecl;
-
-accessMode ::= PRIVATE | PROTECTED | PUBLIC  ;
-
-interfaceDecl ::= INTERFACE IDENTIFIER LEFTCURLY RIGHTCURLY
-                | INTERFACE IDENTIFIER LEFTCURLY prototype_plus RIGHTCURLY;
-
-prototype_plus ::= prototype_plus prototype
-                 | prototype;
-prototype ::= type IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS SEMICOLON
-             | VOID IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS SEMICOLON
-             | type IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS SEMICOLON
-             | VOID IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS SEMICOLON;
-
-stmtBlock ::= LEFTCURLY RIGHTCURLY
-            | LEFTCURLY variableDecl_plus RIGHTCURLY
-            | LEFTCURLY stmt_plus RIGHTCURLY
-            | LEFTCURLY variableDecl_plus stmt_plus RIGHTCURLY;
-
-stmt_plus ::= stmt_plus stmt
-            | stmt;
-
-stmt ::= expr SEMICOLON | SEMICOLON | ifStmt | whileStmt | forStmt
-            | breakStmt | continueStmt | returnStmt | printStmt
-            | stmtBlock ;
-
-ifStmt ::= IF LEFTPARANTHESIS expr RIGHTPARANTHESIS  stmt
-         | IF LEFTPARANTHESIS expr RIGHTPARANTHESIS stmt ELSE stmt;
-
-whileStmt::= WHILE LEFTPARANTHESIS expr RIGHTPARANTHESIS stmt;
-
-forStmt ::= FOR LEFTPARANTHESIS SEMICOLON expr SEMICOLON RIGHTPARANTHESIS stmt
-          | FOR LEFTPARANTHESIS expr SEMICOLON expr SEMICOLON RIGHTPARANTHESIS stmt
-          | FOR LEFTPARANTHESIS  SEMICOLON expr SEMICOLON expr RIGHTPARANTHESIS stmt
-          | FOR LEFTPARANTHESIS expr SEMICOLON expr SEMICOLON expr RIGHTPARANTHESIS stmt;
-
-returnStmt ::= RETURN SEMICOLON
-             | RETURN expr SEMICOLON;
-
-breakStmt ::= BREAK SEMICOLON;
-
-continueStmt ::= CONTINUE SEMICOLON;
-
-printStmt ::= PRINT LEFTPARANTHESIS expr_plus RIGHTPARANTHESIS SEMICOLON;
-
-expr_plus ::= expr COMMA expr
-            | expr ;
+Formals ::=  VariablePlus comma |;
 
 
-expr ::= lValue ASSIGN expr | constant | lValue
-        | THIS | call | LEFTPARANTHESIS expr RIGHTPARANTHESIS
-        | expr ADD expr | expr SUB expr | expr MUL expr
-        | expr DIV expr | expr MOD expr | SUB expr
-        | expr LESS expr | expr LESSEQUAL expr
-        | expr GREATER expr | expr GREATEREQUAL expr
-        | expr EQUAL expr | expr NOTEQUAL expr
-        | expr AND expr | expr OR expr | NOT expr
-        | READINTEGER LEFTPARANTHESIS RIGHTPARANTHESIS
-        | READLINE LEFTPARANTHESIS RIGHTPARANTHESIS
-        | NEW IDENTIFIER | NEWARRAY LEFTPARANTHESIS expr COMMA type RIGHTPARANTHESIS
-        | ITOD LEFTPARANTHESIS expr RIGHTPARANTHESIS | DTOI LEFTPARANTHESIS expr RIGHTPARANTHESIS
-        | ITOB LEFTPARANTHESIS expr RIGHTPARANTHESIS | BTOI LEFTPARANTHESIS expr RIGHTPARANTHESIS;
+VariablePlus ::= VariablePlus Variable | Variable;
 
-lValue ::= IDENTIFIER | expr DOT IDENTIFIER | expr LEFTBRACKET expr RIHGTBRACKET;
+ClassDecl ::= CLASS identifier leftcurly FieldPlus  rightcurly
+            | CLASS identifier leftcurly rightcurly;
 
-call ::= IDENTIFIER LEFTPARANTHESIS actuals RIGHTPARANTHESIS | expr DOT IDENTIFIER LEFTPARANTHESIS actuals RIGHTPARANTHESIS
-         IDENTIFIER LEFTPARANTHESIS  RIGHTPARANTHESIS | expr DOT IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS;
+FieldPlus ::= FieldPlus Field | Field;
 
-actuals ::= expr_plus;
+Field ::= AccessMode VariableDecl | AccessMode FunctionDecl;
 
-constant ::= INTCONST | DOUBLECONST | HEXCONST | TRUE
-           | FALSE | STRINGCONST | NULL;
+AccessMode ::= private | public |;
 
+StatementBlock ::= leftcurly rightcurly
+            | leftcurly VariableDeclPlus rightcurly
+            | leftcurly StatementPlus rightcurly
+            | leftcurly VariableDeclPlus StatementPlus rightcurly;
+
+StatementPlus ::= StatementPlus Statement
+            | Statement;
+
+Statement ::= Expression semicolon | semicolon | IfStatement | WhileStatement | ForStatement
+            | BreakStatement | ContinueStatement | ReturnStatement | PrintStatement
+            | StatementBlock;
+
+IfStatement ::= if leftparanthesis Expression rightparanthesis  Statement
+              | if leftparanthesis Expression rightparanthesis Statement else Statement;
+
+WhileStatement::= while leftparanthesis Expression rightparanthesis Statement;
+
+ForStatement ::= for leftparanthesis semicolon Expression semicolon rightparanthesis Statement
+               | for leftparanthesis Expression semicolon Expression semicolon rightparanthesis Statement
+               | for leftparanthesis  semicolon Expression semicolon Expression rightparanthesis Statement
+               | for leftparanthesis Expression semicolon Expression semicolon Expression rightparanthesis Statement;
+
+ReturnStatement ::= return semicolon
+                  | return Expression semicolon;
+
+BreakStatement ::= break semicolon;
+
+ContinueStatement ::= continue semicolon;
+
+PrintStatement ::= print leftparanthesis ExpressionPlus comma rightparanthesis SEMICOLON;
+
+ExpressionPlus ::= ExpressionPlus Expression
+                 | Expression ;
+
+
+Expression ::= LValue assign Expression
+             | LValue assignAdd Expression
+             | LValue assignSub Expression
+             | LValue assignMul Expression
+             | LValue assignDiv Expression
+             | Constant | LValue
+             | this | Call
+             | leftparanthesis Expression rightparanthesis
+             | Expression add Expression | Expression sub Expression
+             | Expression mul Expression | Expression DIV Expression | Expression MOD Expression
+             | sub Expression
+             | Expression less Expression | Expression lessequal Expression
+             | Expression greater Expression | Expression greaterequal Expression
+             | Expression equal Expression | Expression notequal Expression
+             | Expression and Expression | Expression or Expression | not Expression
+             | readinteger leftparanthesis rightparanthesis
+             | readline leftparanthesis rightparanthesis
+             | new identifier | newarray leftparanthesis Expression comma Type rightparanthesis
+             | itod leftparanthesis Expression rightparanthesis
+             | dtoi leftparanthesis Expression rightparanthesis
+             | itob leftparanthesis Expression rightparanthesis
+             | btoi leftparanthesis Expression rightparanthesis
+             | line | function;
+
+LValue ::= identifier
+         | Expression dot identifier
+         | Expression leftbracket Expression rihgtbracket;
+
+Call ::= identifier leftparanthesis Actuals rightparanthesis
+       | Expression dot identifier leftparanthesis Actuals rightparanthesis;
+
+Actuals ::= ExpressionPlus comma | ;
+
+Constant ::= intconst | doubleconst | booleanconst | stringconst | null;
