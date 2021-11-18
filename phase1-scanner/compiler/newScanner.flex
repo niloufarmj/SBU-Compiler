@@ -1,15 +1,23 @@
 import java.io.*;
-import  java.io.IOException;
+import java.io.IOException;
 %%
 %public
 %class Lexer
 %unicode
+%cup
+%char
+%type Symbol
 %standalone
 
 %{
     StringBuffer out = new StringBuffer();
     StringBuilder string = new StringBuilder();
     String value;
+
+    public Symbol tokenize (int tokenType , Object... value) {
+        Object tokenValue = value.length > 0 ? value[0] : yytext();
+        return new Symbol(tokenType, tokenValue);
+    }
 %}
 
 %eof{
@@ -49,74 +57,73 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 %%
 
 <YYINITIAL>{
-    "__func__"           {out.append("__func__\n");}
-    "__line__"           {out.append("__line__\n");}
-    "bool"               {out.append("bool\n");}
-    "break"              {out.append("break\n");}
-    "btoi"               {out.append("btoi\n");}
-    "class"              {out.append("class\n");}
-    "continue"           {out.append("continue\n");}
-    "double"             {out.append("double\n");}
-    "dtoi"               {out.append("dtoi\n");}
-    "else"               {out.append("else\n");}
-    "for"                {out.append("for\n");}
-    "if"                 {out.append("if\n");}
-    "import"             {out.append("import\n");}
-    "int"                {out.append("int\n");}
-    "itob"               {out.append("itob\n");}
-    "itod"               {out.append("itod\n");}
-    "new"                {out.append("new\n");}
-    "NewArray"           {out.append("NewArray\n");}
-    "null"               {out.append("null\n");}
-    "Print"              {out.append("Print\n");}
-    "private"            {out.append("private\n");}
-    "public"             {out.append("public\n");}
-    "ReadInteger"        {out.append("ReadInteger\n");}
-    "ReadLine"           {out.append("ReadLine\n");}
-    "return"             {out.append("return\n");}
-    "string"             {out.append("string\n");}
-    "this"               {out.append("this\n");}
-    "void"               {out.append("void\n");}
-    "while"              {out.append("while\n");}
+    "__func__"           {tokenize("__func__\n");}
+    "__line__"           {tokenize("__line__\n");}
+    "bool"               {tokenize("bool\n");}
+    "break"              {tokenize("break\n");}
+    "btoi"               {tokenize("btoi\n");}
+    "class"              {tokenize("class\n");}
+    "continue"           {tokenize("continue\n");}
+    "double"             {tokenize("double\n");}
+    "dtoi"               {tokenize("dtoi\n");}
+    "else"               {tokenize("else\n");}
+    "for"                {tokenize("for\n");}
+    "if"                 {tokenize("if\n");}
+    "import"             {tokenize("import\n");}
+    "int"                {tokenize("int\n");}
+    "itob"               {tokenize("itob\n");}
+    "itod"               {tokenize("itod\n");}
+    "new"                {tokenize("new\n");}
+    "NewArray"           {tokenize("NewArray\n");}
+    "null"               {tokenize("null\n");}
+    "Print"              {tokenize("Print\n");}
+    "private"            {tokenize("private\n");}
+    "public"             {tokenize("public\n");}
+    "ReadInteger"        {tokenize("ReadInteger\n");}
+    "ReadLine"           {tokenize("ReadLine\n");}
+    "return"             {tokenize("return\n");}
+    "string"             {tokenize("string\n");}
+    "this"               {tokenize("this\n");}
+    "void"               {tokenize("void\n");}
+    "while"              {tokenize("while\n");}
 
 
-
-	"+"					 {out.append("+\n");}
-	"-"			    	 {out.append("-\n");}
-	"*"					 {out.append("*\n");}
-	"/"					 {out.append("/\n");}
-	"%"					 {out.append("%\n");}
-    "<"					 {out.append("<\n");}
-    "<="				 {out.append("<=\n");}
-    ">"					 {out.append(">\n");}
-    ">="				 {out.append(">=\n");}
-	"="					 {out.append("=\n");}
-    "+="				 {out.append("+=\n");}
-	"-="				 {out.append("-=\n");}
-    "*="				 {out.append("*=\n");}
-	"/="				 {out.append("/=\n");}
-    "=="				 {out.append("==\n");}
-    "!="				 {out.append("!=\n");}
-	"&&"				 {out.append("&&\n");}
- 	"||"				 {out.append("||\n");}
-	"!"				     {out.append("!\n");}
-	";"		    		 {out.append(";\n");}
-	","				     {out.append(",\n");}
-    "."				     {out.append(".\n");}
-	"["				     {out.append("[\n");}
-	"]"				     {out.append("]\n");}
-	"("				     {out.append("(\n");}
-	")"					 {out.append(")\n");}
-	"{"					 {out.append("{\n");}
-	"}"					 {out.append("}\n");}
+	"+"					 {tokenize("+\n");}
+	"-"			    	 {tokenize("-\n");}
+	"*"					 {tokenize("*\n");}
+	"/"					 {tokenize("/\n");}
+	"%"					 {tokenize("%\n");}
+    "<"					 {tokenize("<\n");}
+    "<="				 {tokenize("<=\n");}
+    ">"					 {tokenize(">\n");}
+    ">="				 {tokenize(">=\n");}
+	"="					 {tokenize("=\n");}
+    "+="				 {tokenize("+=\n");}
+	"-="				 {tokenize("-=\n");}
+    "*="				 {tokenize("*=\n");}
+	"/="				 {tokenize("/=\n");}
+    "=="				 {tokenize("==\n");}
+    "!="				 {tokenize("!=\n");}
+	"&&"				 {tokenize("&&\n");}
+ 	"||"				 {tokenize("||\n");}
+	"!"				     {tokenize("!\n");}
+	";"		    		 {tokenize(";\n");}
+	","				     {tokenize(",\n");}
+    "."				     {tokenize(".\n");}
+	"["				     {tokenize("[\n");}
+	"]"				     {tokenize("]\n");}
+	"("				     {tokenize("(\n");}
+	")"					 {tokenize(")\n");}
+	"{"					 {tokenize("{\n");}
+	"}"					 {tokenize("}\n");}
 
     //Literal detect action
-    {BooleanLiteral}     {out.append("T_BOOLEANLITERAL "+ yytext()+"\n");}
-    {IntLiteral}         {out.append("T_INTLITERAL "+ yytext()+"\n");}
-    {DoubleLiteral}      {out.append("T_DOUBLELITERAL "+ yytext()+"\n");}
+    {BooleanLiteral}     {tokenize("T_BOOLEANLITERAL "+ yytext()+"\n");}
+    {IntLiteral}         {tokenize("T_INTLITERAL "+ yytext()+"\n");}
+    {DoubleLiteral}      {tokenize("T_DOUBLELITERAL "+ yytext()+"\n");}
 
     //Identifier detect action
-    {Identifier}         {out.append("T_ID " + yytext() +"\n");}
+    {Identifier}         {tokenize("T_ID " + yytext() +"\n");}
 
     //WhiteSpace detect action
     {WhiteSpace}         {/*ignore*/}
@@ -125,13 +132,13 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
     {Comment}            {/*ignore*/}
 
     //String detect action
-    "\""                 {yybegin(STRING); string.append(yytext());}پ
+    "\""                 {yybegin(STRING); string.append(yytext());}
 }
 
 <STRING> {
     "\""    {
         yybegin(YYINITIAL);
-        out.append("T_STRINGLITERAL " + string.toString() + yytext() + "\n");
+        tokenize("T_STRINGLITERAL " + string.toString() + yytext() + "\n");
         string.delete(0,string.length());
     }
    "\\\""                {string.append(yytext());}
