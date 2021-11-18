@@ -1,0 +1,228 @@
+import java_cup.runtime.*;
+
+parser code {:
+    public Laxer laxer;
+    public Parser (Laxer laxer){
+        this.laxer = laxer;
+    }
+    @Override
+    protected void report_expected_token_ids(){ }
+:}
+scan with {:return laxer.next_token();:}
+init with {::}
+
+/* terminals */
+
+//Reserved Words:
+terminal INTEGER, DOUBLE, BOOLEAN, STRING, VOID;
+terminal CLASS, INTERFACE, IMPLEMENTS, EXTENDS;
+terminal FOR, WHILE, IF, ELSE, BREAK, CONTINUE;
+terminal RETURN, NEW, THIS, NULL, NEWARRAY;
+terminal READINTEGER, READLINE, PRINT, DTOI, ITOD, BTOI, ITOB;
+terminal PRIVATE, PROTECTED, PUBLIC;
+
+
+//Relational Symbols:
+terminal EQUAL, NOTEQUAL, LESS, GREATER, LESSEQUAL, GREATEREQUAL;
+
+//Ligical Symbols:
+terminal AND, OR, NOT;
+
+//Arithmitic symbols:
+terminal DIV, MUL, ADD, SUB, MOD;
+
+//Other Symbols:
+terminal ASSIGN, SEMICOLON, COMMA, LEFTBRACKET, RIHGTBRACKET;
+terminal DOT, LEFTPARANTHESIS, RIGHTPARANTHESIS, LEFTCURLY, RIGHTCURLY;
+
+//Identifier:
+terminal IDENTIFIER;
+
+//Constants:
+terminal INTCONST, HEXCONST, DOUBLECONST, STRINGCONST, TRUE, FALSE;
+
+
+/* Non terminals */
+
+nonterminal program;
+
+// declarations and types
+nonterminal decl, variableDecl, functionDecl, classDecl, interfaceDecl;
+
+nonterminal variableDecl_plus;
+// define variable
+nonterminal variable;
+// types of definitions except void
+nonterminal type;
+// args of functions
+nonterminal formals;
+//statement block
+nonterminal stmtBlock;
+// methods and variables in class
+nonterminal field;
+nonterminal field_plus;
+//public or private of protected
+nonterminal accessMode;
+//protoypes in interface
+nonterminal prototype;
+nonterminal prototype_plus;
+// id1, id2, .... (minimum 1 IDENTIFIER)
+nonterminal id_plus;
+//statement
+nonterminal stmt;
+nonterminal stmt_plus;
+//IF and While and for
+nonterminal ifStmt , whileStmt , forStmt;
+// break continue return print
+nonterminal breakStmt , continueStmt ,returnStmt ,printStmt;
+//expressions
+nonterminal expr;
+nonterminal expr_plus;
+
+nonterminal lValue;
+
+nonterminal constant;
+
+nonterminal call;
+
+nonterminal actuals;
+
+
+
+/**/
+
+/* precedence  */
+precedence left COMMA;
+precedence nonassoc ASSIGN;
+precedence left AND, OR ;
+precedence left EQUAL, NOTEQUAL;
+precedence left LESS, LESSEQUAL, GREATER, GREATEREQUAL;
+precedence left ADD, SUB;
+precedence left MUL, DIV, MOD;
+precedence right NOT;
+precedence right LEFTPARANTHESIS, RIGHTPARANTHESIS, LEFTBRACKET, RIHGTBRACKET;
+/**/
+
+start with program;
+
+program  ::= program decl
+           | decl;
+
+decl ::= variableDecl
+       | functionDecl
+       | classDecl
+       | interfaceDecl ;
+
+variableDecl ::= variable SEMICOLON;
+
+variableDecl_plus ::= variableDecl_plus variableDecl
+                    | variableDecl;
+
+variable ::= type IDENTIFIER;
+
+type ::= INTEGER
+       | DOUBLE
+       | BOOLEAN
+       | STRING
+       | IDENTIFIER
+       | type LRBRACK;
+
+functionDecl ::= type IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS stmtBlock
+               | VOID IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS stmtBlock
+               | type IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS stmtBlock
+               | VOID IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS stmtBlock;
+
+formals ::=  variable COMMA formals
+           | variable  ;
+
+classDecl ::= CLASS IDENTIFIER LEFTCURLY field_plus  RIGHTCURLY
+            | CLASS IDENTIFIER EXTENDS IDENTIFIER LEFTCURLY field_plus RIGHTCURLY
+            | CLASS IDENTIFIER IMPLEMENTS id_plus  LEFTCURLY field_plus  RIGHTCURLY
+            | CLASS IDENTIFIER EXTENDS IDENTIFIER IMPLEMENTS id_plus LEFTCURLY field_plus RIGHTCURLY
+            | CLASS IDENTIFIER LEFTCURLY RIGHTCURLY
+            | CLASS IDENTIFIER EXTENDS IDENTIFIER LEFTCURLY RIGHTCURLY
+            | CLASS IDENTIFIER IMPLEMENTS id_plus  LEFTCURLY RIGHTCURLY
+            | CLASS IDENTIFIER EXTENDS IDENTIFIER IMPLEMENTS id_plus LEFTCURLY RIGHTCURLY;
+
+id_plus ::= IDENTIFIER
+          | IDENTIFIER COMMA id_plus ;
+
+field_plus ::= field_plus field
+             | field;
+
+field ::= accessMode variableDecl
+        | variableDecl
+        | accessMode functionDecl
+        | functionDecl;
+
+accessMode ::= PRIVATE | PROTECTED | PUBLIC  ;
+
+interfaceDecl ::= INTERFACE IDENTIFIER LEFTCURLY RIGHTCURLY
+                | INTERFACE IDENTIFIER LEFTCURLY prototype_plus RIGHTCURLY;
+
+prototype_plus ::= prototype_plus prototype
+                 | prototype;
+prototype ::= type IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS SEMICOLON
+             | VOID IDENTIFIER LEFTPARANTHESIS formals RIGHTPARANTHESIS SEMICOLON
+             | type IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS SEMICOLON
+             | VOID IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS SEMICOLON;
+
+stmtBlock ::= LEFTCURLY RIGHTCURLY
+            | LEFTCURLY variableDecl_plus RIGHTCURLY
+            | LEFTCURLY stmt_plus RIGHTCURLY
+            | LEFTCURLY variableDecl_plus stmt_plus RIGHTCURLY;
+
+stmt_plus ::= stmt_plus stmt
+            | stmt;
+
+stmt ::= expr SEMICOLON | SEMICOLON | ifStmt | whileStmt | forStmt
+            | breakStmt | continueStmt | returnStmt | printStmt
+            | stmtBlock ;
+
+ifStmt ::= IF LEFTPARANTHESIS expr RIGHTPARANTHESIS  stmt
+         | IF LEFTPARANTHESIS expr RIGHTPARANTHESIS stmt ELSE stmt;
+
+whileStmt::= WHILE LEFTPARANTHESIS expr RIGHTPARANTHESIS stmt;
+
+forStmt ::= FOR LEFTPARANTHESIS SEMICOLON expr SEMICOLON RIGHTPARANTHESIS stmt
+          | FOR LEFTPARANTHESIS expr SEMICOLON expr SEMICOLON RIGHTPARANTHESIS stmt
+          | FOR LEFTPARANTHESIS  SEMICOLON expr SEMICOLON expr RIGHTPARANTHESIS stmt
+          | FOR LEFTPARANTHESIS expr SEMICOLON expr SEMICOLON expr RIGHTPARANTHESIS stmt;
+
+returnStmt ::= RETURN SEMICOLON
+             | RETURN expr SEMICOLON;
+
+breakStmt ::= BREAK SEMICOLON;
+
+continueStmt ::= CONTINUE SEMICOLON;
+
+printStmt ::= PRINT LEFTPARANTHESIS expr_plus RIGHTPARANTHESIS SEMICOLON;
+
+expr_plus ::= expr COMMA expr
+            | expr ;
+
+
+expr ::= lValue ASSIGN expr | constant | lValue
+        | THIS | call | LEFTPARANTHESIS expr RIGHTPARANTHESIS
+        | expr ADD expr | expr SUB expr | expr MUL expr
+        | expr DIV expr | expr MOD expr | SUB expr
+        | expr LESS expr | expr LESSEQUAL expr
+        | expr GREATER expr | expr GREATEREQUAL expr
+        | expr EQUAL expr | expr NOTEQUAL expr
+        | expr AND expr | expr OR expr | NOT expr
+        | READINTEGER LEFTPARANTHESIS RIGHTPARANTHESIS
+        | READLINE LEFTPARANTHESIS RIGHTPARANTHESIS
+        | NEW IDENTIFIER | NEWARRAY LEFTPARANTHESIS expr COMMA type RIGHTPARANTHESIS
+        | ITOD LEFTPARANTHESIS expr RIGHTPARANTHESIS | DTOI LEFTPARANTHESIS expr RIGHTPARANTHESIS
+        | ITOB LEFTPARANTHESIS expr RIGHTPARANTHESIS | BTOI LEFTPARANTHESIS expr RIGHTPARANTHESIS;
+
+lValue ::= IDENTIFIER | expr DOT IDENTIFIER | expr LEFTBRACKET expr RIHGTBRACKET;
+
+call ::= IDENTIFIER LEFTPARANTHESIS actuals RIGHTPARANTHESIS | expr DOT IDENTIFIER LEFTPARANTHESIS actuals RIGHTPARANTHESIS
+         IDENTIFIER LEFTPARANTHESIS  RIGHTPARANTHESIS | expr DOT IDENTIFIER LEFTPARANTHESIS RIGHTPARANTHESIS;
+
+actuals ::= expr_plus;
+
+constant ::= INTCONST | DOUBLECONST | HEXCONST | TRUE
+           | FALSE | STRINGCONST | NULL;
+

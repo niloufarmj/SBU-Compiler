@@ -14,16 +14,14 @@ import java.io.IOException;
     StringBuilder string = new StringBuilder();
     String value;
 
-    public Symbol tokenize (int tokenType , Object... value) {
+    public Symbol tokenize (int tokenType, Object... value) {
         Object tokenValue = value.length > 0 ? value[0] : yytext();
         return new Symbol(tokenType, tokenValue);
     }
 %}
 
 %eof{
-
     System.out.println(out.toString());
-
 %eof}
 
 LineBreak = (\n|\r|\r\n)
@@ -70,7 +68,7 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
     "for"                {tokenize("for\n");}
     "if"                 {tokenize("if\n");}
     "import"             {tokenize("import\n");}
-    "int"                {tokenize("int\n");}
+    "int"                {tokenize(sym.INTEGER);}
     "itob"               {tokenize("itob\n");}
     "itod"               {tokenize("itod\n");}
     "new"                {tokenize("new\n");}
