@@ -14,32 +14,32 @@ init with {::}
 /* terminals */
 
 //Reserved Words:
-terminal INTEGER, DOUBLE, BOOLEAN, STRING, VOID;
-terminal CLASS, INTERFACE, IMPLEMENTS, EXTENDS;
-terminal FOR, WHILE, IF, ELSE, BREAK, CONTINUE;
-terminal RETURN, NEW, THIS, NULL, NEWARRAY;
-terminal READINTEGER, READLINE, PRINT, DTOI, ITOD, BTOI, ITOB;
-terminal PRIVATE, PROTECTED, PUBLIC;
+terminal integer, double, boolean, string, void;
+terminal Class, interface, implements, extends;
+terminal for, while, if, else, break, continue;
+terminal return, new, this, null, newarray;
+terminal readinteger, readline, print, dtoi, itod, btoi, itob;
+terminal private, protected, public;
 
 
 //Relational Symbols:
-terminal EQUAL, NOTEQUAL, LESS, GREATER, LESSEQUAL, GREATEREQUAL;
+terminal equal, notequal, less, greater, lessequal, greaterequal;
 
 //Ligical Symbols:
-terminal AND, OR, NOT;
+terminal and, or, not;
 
 //Arithmitic symbols:
-terminal DIV, MUL, ADD, SUB, MOD;
+terminal div, mul, add, sub, mod;
 
 //Other Symbols:
-terminal ASSIGN, SEMICOLON, COMMA, LEFTBRACKET, RIHGTBRACKET;
-terminal DOT, LEFTPARANTHESIS, RIGHTPARANTHESIS, LEFTCURLY, RIGHTCURLY;
+terminal assign, semicolon, comma, leftbracket, rihgtbracket;
+terminal dot, leftparanthesis, rightparanthesis, leftcurly, rightcurly;
 
 //Identifier:
-terminal IDENTIFIER;
+terminal identifier;
 
 //Constants:
-terminal INTCONST, HEXCONST, DOUBLECONST, STRINGCONST, TRUE, FALSE;
+terminal intconst, hexconst, doubleconst, stringconst, true, false;
 
 
 /* Non terminals */
@@ -92,15 +92,15 @@ nonterminal actuals;
 /**/
 
 /* precedence  */
-precedence left COMMA;
-precedence nonassoc ASSIGN;
-precedence left AND, OR ;
-precedence left EQUAL, NOTEQUAL;
-precedence left LESS, LESSEQUAL, GREATER, GREATEREQUAL;
-precedence left ADD, SUB;
-precedence left MUL, DIV, MOD;
-precedence right NOT;
-precedence right LEFTPARANTHESIS, RIGHTPARANTHESIS, LEFTBRACKET, RIHGTBRACKET;
+precedence left comma;
+precedence nonassoc assign;
+precedence left and, or ;
+precedence left equal, notequal;
+precedence left less, lessequal, greater, greaterequal;
+precedence left add, sub;
+precedence left mul, div, mod;
+precedence right not;
+precedence right leftparanthesis, rightparanthesis, leftbracket, rihgtbracket;
 /**/
 
 start with program;
