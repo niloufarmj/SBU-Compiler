@@ -42,7 +42,5 @@ public class Main {
         return null;
 
         //Laxer scanner = new Laxer(new FileReader(inputFile));
-
-
     }
 }
