@@ -3,7 +3,7 @@ import java_cup.runtime.*;
 
 parser code {:
      Lexer s;
-     Parser(Lexer s){ this.s=s; }
+     Parser(LexerP s){ this.s=s; }
      protected void report_expected_token_ids(){ }
 :}
 
