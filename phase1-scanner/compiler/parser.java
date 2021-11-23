@@ -5,6 +5,7 @@
 
 package compiler;
 
+
 import java_cup.runtime.*;
 import java_cup.runtime.XMLElement;
 
@@ -1090,19 +1091,19 @@ public class parser extends java_cup.runtime.lr_parser {
   /** User initialization code. */
   public void user_init() throws java.lang.Exception
     {
- s.init(); 
+  
     }
 
   /** Scan to get the next Symbol. */
   public java_cup.runtime.Symbol scan()
     throws java.lang.Exception
     {
- return s.nextToken(); 
+ return s.next_Token(); 
     }
 
 
-     Lexer s;
-     Parser(Lexer s){ this.s=s; }
+     LexerP s;
+     Parser(LexerP s){ this.s=s; }
      protected void report_expected_token_ids(){ }
 
 
