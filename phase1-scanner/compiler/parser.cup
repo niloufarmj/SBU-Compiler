@@ -1,15 +1,14 @@
+package compiler;
 import java_cup.runtime.*;
 
 parser code {:
-    public Laxer laxer;
-    public Parser (Laxer laxer){
-        this.laxer = laxer;
-    }
-    @Override
-    protected void report_expected_token_ids(){ }
+     Lexer s;
+     Parser(Lexer s){ this.s=s; }
+     protected void report_expected_token_ids(){ }
 :}
-scan with {:return laxer.next_token();:}
-init with {::}
+
+init with {: s.init(); :};
+scan with {: return s.nextToken(); :};
 
 /* terminals */
 
@@ -86,7 +85,7 @@ nonterminal DeclPlus, MacroPlus, ExpressionPlus, StatementPlus
 /**/
 
 /* precedence  */
-precedence left leftbracker;
+precedence left LEFTBRACKET;
 precedence left COMMA;
 precedence left ASSIGN, ASSIGNADD, ASSIGNSUB, ASSIGNMUL, ASSIGNSUB;
 precedence left OR;
@@ -111,31 +110,33 @@ Decl ::= VariableDecl
 DeclPlus ::= DeclPlus Decl
            | Decl;
 
-Macro ::= IMPORT STRINGCONST
-        | DEFINE IdPlus
-        | DEFINE;
+//Macro ::= IMPORT STRINGCONST
+//        | DEFINE IdPlus
+//        | DEFINE;
+
+Macro ::= IMPORT STRINGCONST;
+
+//IdPlus ::= IDENTIFIER
+//           | IdPlus IDENTIFIER;
 
 MacroPlus ::= MacroPlus Macro
             | Macro;
-
-IdPlus ::= IDENTIFIER
-         | IdPlus IDENTIFIER;
 
 VariableDecl ::= Variable SEMICOLON;
 
 VariableDeclPlus ::= VariableDeclPlus VariableDecl
                     | VariableDecl;
 
-Variable ::= Type IDENTIFIER;
+Variable ::= Type IDENTIFIER | IDENTIFIER IDENTIFIER;
 
 Type ::= INTEGER
        | DOUBLE
        | BOOLEAN
        | STRING
-       | IDENTIFIER
-       | Type LEFTBRACKET RIGHTBRACKET;
+       | Type LEFTBRACKET RIGHTBRACKET | IDENTIFIER LEFTBRACKET RIGHTBRACKET;
 
 FunctionDecl ::= Type IDENTIFIER LEFTPARANTHESIS Formals RIGHTPARANTHESIS StatementBlock
+               | IDENTIFIER IDENTIFIER LEFTPARANTHESIS Formals RIGHTPARANTHESIS StatementBlock
                | VOID IDENTIFIER LEFTPARANTHESIS Formals RIGHTPARANTHESIS StatementBlock;
 
 Formals ::=  VariablePlus COMMA |;
@@ -187,12 +188,12 @@ ExpressionPlus ::= ExpressionPlus Expression
                  | Expression ;
 
 
-Expression ::= LValue ASSIGN Expression
-             | LValue ASSIGNADD Expression
-             | LValue ASSIGNSUB Expression
-             | LValue ASSIGNMUL Expression
-             | LValue ASSIGNDIV Expression
-             | Constant | LValue
+Expression ::= LValue ASSIGN Expression | IDENTIFIER ASSIGN Expression
+             | LValue ASSIGNADD Expression | IDENTIFIER ASSIGNADD Expression
+             | LValue ASSIGNSUB Expression | IDENTIFIER ASSIGNSUB Expression
+             | LValue ASSIGNMUL Expression | IDENTIFIER ASSIGNMUL Expression
+             | LValue ASSIGNDIV Expression | IDENTIFIER ASSIGNDIV Expression
+             | Constant | LValue | IDENTIFIER
              | THIS | Call
              | LEFTPARANTHESIS Expression RIGHTPARANTHESIS
              | Expression ADD Expression | Expression SUB Expression
@@ -205,14 +206,14 @@ Expression ::= LValue ASSIGN Expression
              | READINTEGER LEFTPARANTHESIS RIGHTPARANTHESIS
              | READLINE LEFTPARANTHESIS RIGHTPARANTHESIS
              | NEW IDENTIFIER | NEWARRAY LEFTPARANTHESIS Expression COMMA Type RIGHTPARANTHESIS
+             | NEWARRAY LEFTPARANTHESIS Expression COMMA IDENTIFIER RIGHTPARANTHESIS
              | ITOD LEFTPARANTHESIS Expression RIGHTPARANTHESIS
              | DTOI LEFTPARANTHESIS Expression RIGHTPARANTHESIS
              | ITOB LEFTPARANTHESIS Expression RIGHTPARANTHESIS
              | BTOI LEFTPARANTHESIS Expression RIGHTPARANTHESIS
              | LINE | FUNCTION;
 
-LValue ::= IDENTIFIER
-         | Expression DOT IDENTIFIER
+LValue ::= Expression DOT IDENTIFIER
          | Expression LEFTBRACKET Expression RIGHTBRACKET;
 
 Call ::= IDENTIFIER LEFTPARANTHESIS Actuals RIGHTPARANTHESIS

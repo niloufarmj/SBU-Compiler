@@ -1,4 +1,4 @@
-import java.io.*;
+import compiler.sym;import java.io.*;
 import java.io.IOException;
 %%
 %public
@@ -115,12 +115,12 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 	"}"					 {tokenize(sym.RIGHTCURLY);}
 
     //Literal detect action
-    {BooleanLiteral}     {tokenize("T_BOOLEANLITERAL "+ yytext()+"\n");}
-    {IntLiteral}         {tokenize("T_INTLITERAL "+ yytext()+"\n");}
-    {DoubleLiteral}      {tokenize("T_DOUBLELITERAL "+ yytext()+"\n");}
+    {BooleanLiteral}     {tokenize(sym.BOOLEAN, yytext());}
+    {IntLiteral}         {tokenize(sym.INTEGER, yytext());}
+    {DoubleLiteral}      {tokenize(sym.DOUBLE, yytext());}
 
     //Identifier detect action
-    {Identifier}         {tokenize("T_ID " + yytext() +"\n");}
+    {Identifier}         {tokenize(sym.IDENTIFIER,yytext() );}
 
     //WhiteSpace detect action
     {WhiteSpace}         {/*ignore*/}
@@ -135,10 +135,9 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 <STRING> {
     "\""    {
         yybegin(YYINITIAL);
-        tokenize("T_STRINGLITERAL " + string.toString() + yytext() + "\n");
+        tokenize(sym.STRING, string.toString() + yytext());
         string.delete(0,string.length());
     }
    "\\\""                {string.append(yytext());}
    .                     {string.append(yytext());}
 }
-
