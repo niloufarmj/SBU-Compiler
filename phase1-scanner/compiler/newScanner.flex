@@ -2,7 +2,7 @@ import compiler.sym;import java.io.*;
 import java.io.IOException;
 %%
 %public
-%class Lexer
+%class LexerP
 %unicode
 %cup
 %char
@@ -54,73 +54,73 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 %%
 
 <YYINITIAL>{
-    "__func__"           {tokenize(sym.FUNCTION);}
-    "__line__"           {tokenize(sym.LINE);}
-    "bool"               {tokenize(sym.BOOLEAN);}
-    "break"              {tokenize(sym.BREAK);}
-    "btoi"               {tokenize(sym.BTOI);}
-    "class"              {tokenize(sym.CLASS);}
-    "continue"           {tokenize(sym.CONTINUE);}
-    "double"             {tokenize(sym.DOUBLE);}
-    "dtoi"               {tokenize(sym.DTOI);}
-    "else"               {tokenize(sym.ELSE);}
-    "for"                {tokenize(sym.FOR);}
-    "if"                 {tokenize(sym.IF);}
-    "import"             {tokenize(sym.IMPORT);}
-    "int"                {tokenize(sym.INTEGER);}
-    "itob"               {tokenize(sym.ITOB);}
-    "itod"               {tokenize(sym.ITOD);}
-    "new"                {tokenize(sym.NEW);}
-    "NewArray"           {tokenize(sym.NEWARRAY);}
-    "null"               {tokenize(sym.NULL);}
-    "Print"              {tokenize(sym.PRINT);}
-    "private"            {tokenize(sym.PRIVATE);}
-    "public"             {tokenize(sym.PUBLIC);}
-    "ReadInteger"        {tokenize(sym.READINTEGER);}
-    "ReadLine"           {tokenize(sym.READLINE);}
-    "return"             {tokenize(sym.RETURN);}
-    "string"             {tokenize(sym.STRING);}
-    "this"               {tokenize(sym.THIS);}
-    "void"               {tokenize(sym.VOID);}
-    "while"              {tokenize(sym.WHILE);}
+    "__func__"           {return tokenize(sym.FUNCTION);}
+    "__line__"           {return tokenize(sym.LINE);}
+    "bool"               {return tokenize(sym.BOOLEAN);}
+    "break"              {return tokenize(sym.BREAK);}
+    "btoi"               {return tokenize(sym.BTOI);}
+    "class"              {return tokenize(sym.CLASS);}
+    "continue"           {return tokenize(sym.CONTINUE);}
+    "double"             {return tokenize(sym.DOUBLE);}
+    "dtoi"               {return tokenize(sym.DTOI);}
+    "else"               {return tokenize(sym.ELSE);}
+    "for"                {return tokenize(sym.FOR);}
+    "if"                 {return tokenize(sym.IF);}
+    "import"             {return tokenize(sym.IMPORT);}
+    "int"                {return tokenize(sym.INTEGER);}
+    "itob"               {return tokenize(sym.ITOB);}
+    "itod"               {return tokenize(sym.ITOD);}
+    "new"                {return tokenize(sym.NEW);}
+    "NewArray"           {return tokenize(sym.NEWARRAY);}
+    "null"               {return tokenize(sym.NULL);}
+    "Print"              {return tokenize(sym.PRINT);}
+    "private"            {return tokenize(sym.PRIVATE);}
+    "public"             {return tokenize(sym.PUBLIC);}
+    "ReadInteger"        {return tokenize(sym.READINTEGER);}
+    "ReadLine"           {return tokenize(sym.READLINE);}
+    "return"             {return tokenize(sym.RETURN);}
+    "string"             {return tokenize(sym.STRING);}
+    "this"               {return tokenize(sym.THIS);}
+    "void"               {return tokenize(sym.VOID);}
+    "while"              {return tokenize(sym.WHILE);}
 
 
-	"+"					 {tokenize(sym.ADD);}
-	"-"			    	 {tokenize(sym.SUB);}
-	"*"					 {tokenize(sym.MUL);}
-	"/"					 {tokenize(sym.DIV);}
-	"%"					 {tokenize(sym.MOD);}
-    "<"					 {tokenize(sym.LESS);}
-    "<="				 {tokenize(sym.LESSEQUAL);}
-    ">"					 {tokenize(sym.GREATER);}
-    ">="				 {tokenize(sym.GREATEREQUAL);}
-	"="					 {tokenize(sym.ASSIGN);}
-    "+="				 {tokenize(sym.ASSIGNADD);}
-	"-="				 {tokenize(sym.ASSIGNSUB);}
-    "*="				 {tokenize(sym.ASSIGNMUL);}
-	"/="				 {tokenize(sym.ASSIGNDIV);}
-    "=="				 {tokenize(sym.EQUAL);}
-    "!="				 {tokenize(sym.NOTEQUAL);}
-	"&&"				 {tokenize(sym.AND);}
- 	"||"				 {tokenize(sym.OR);}
-	"!"				     {tokenize(sym.NOT);}
-	";"		    		 {tokenize(sym.SEMICOLON);}
-	","				     {tokenize(sym.COMMA);}
-    "."				     {tokenize(sym.DOT);}
-	"["				     {tokenize(sym.LEFTBRACKET);}
-	"]"				     {tokenize(sym.RIGHTBRACKET);}
-	"("				     {tokenize(sym.LEFTPARANTHESIS);}
-	")"					 {tokenize(sym.RIGHTPARANTHESIS);}
-	"{"					 {tokenize(sym.LEFTCURLY);}
-	"}"					 {tokenize(sym.RIGHTCURLY);}
+	"+"					 {return tokenize(sym.ADD);}
+	"-"			    	 {return tokenize(sym.SUB);}
+	"*"					 {return tokenize(sym.MUL);}
+	"/"					 {return tokenize(sym.DIV);}
+	"%"					 {return tokenize(sym.MOD);}
+    "<"					 {return tokenize(sym.LESS);}
+    "<="				 {return tokenize(sym.LESSEQUAL);}
+    ">"					 {return tokenize(sym.GREATER);}
+    ">="				 {return tokenize(sym.GREATEREQUAL);}
+	"="					 {return tokenize(sym.ASSIGN);}
+    "+="				 {return tokenize(sym.ASSIGNADD);}
+	"-="				 {return tokenize(sym.ASSIGNSUB);}
+    "*="				 {return tokenize(sym.ASSIGNMUL);}
+	"/="				 {return tokenize(sym.ASSIGNDIV);}
+    "=="				 {return tokenize(sym.EQUAL);}
+    "!="				 {return tokenize(sym.NOTEQUAL);}
+	"&&"				 {return tokenize(sym.AND);}
+ 	"||"				 {return tokenize(sym.OR);}
+	"!"				     {return tokenize(sym.NOT);}
+	";"		    		 {return tokenize(sym.SEMICOLON);}
+	","				     {return tokenize(sym.COMMA);}
+    "."				     {return tokenize(sym.DOT);}
+	"["				     {return tokenize(sym.LEFTBRACKET);}
+	"]"				     {return tokenize(sym.RIGHTBRACKET);}
+	"("				     {return tokenize(sym.LEFTPARANTHESIS);}
+	")"					 {return tokenize(sym.RIGHTPARANTHESIS);}
+	"{"					 {return tokenize(sym.LEFTCURLY);}
+	"}"					 {return tokenize(sym.RIGHTCURLY);}
 
     //Literal detect action
-    {BooleanLiteral}     {tokenize(sym.BOOLEAN, yytext());}
-    {IntLiteral}         {tokenize(sym.INTEGER, yytext());}
-    {DoubleLiteral}      {tokenize(sym.DOUBLE, yytext());}
+    {BooleanLiteral}     {return tokenize(sym.BOOLEAN, yytext());}
+    {IntLiteral}         {return tokenize(sym.INTEGER, yytext());}
+    {DoubleLiteral}      {return tokenize(sym.DOUBLE, yytext());}
 
     //Identifier detect action
-    {Identifier}         {tokenize(sym.IDENTIFIER,yytext() );}
+    {Identifier}         {return tokenize(sym.IDENTIFIER,yytext() );}
 
     //WhiteSpace detect action
     {WhiteSpace}         {/*ignore*/}
@@ -135,7 +135,7 @@ Identifier = [a-zA-Z][a-zA-Z0-9_]*
 <STRING> {
     "\""    {
         yybegin(YYINITIAL);
-        tokenize(sym.STRING, string.toString() + yytext());
+        return tokenize(sym.STRING, string.toString() + yytext());
         string.delete(0,string.length());
     }
    "\\\""                {string.append(yytext());}

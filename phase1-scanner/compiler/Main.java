@@ -4,7 +4,7 @@ import java.io.FileWriter;
 
 public class Main {
 
-    public static String run(java.io.File inputFile) throws Exception {
+    public static boolean run(java.io.File inputFile) throws Exception {
         //StringBuilder str = new StringBuilder();
         /* dshuisdhuihdsu/*fuihfuahuhd */
         PreScanner preScanner = null;
@@ -31,10 +31,9 @@ public class Main {
             java.io.FileInputStream stream = new java.io.FileInputStream(inputFile);
             java.io.Reader reader = new java.io.InputStreamReader(stream);
             scanner = new Lexer(reader);
-            while (!scanner.zzAtEOF) scanner.yylex();
-
+            parser p = new parser(scanner);
             //.out.println(scanner.out.toString());
-            return scanner.out.toString();
+            //return scanner.out.toString();
         } catch (Exception e) {
             System.out.println("Unexpected exception:");
             e.printStackTrace();

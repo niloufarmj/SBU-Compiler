@@ -7,8 +7,8 @@ parser code {:
      protected void report_expected_token_ids(){ }
 :}
 
-init with {: s.init(); :};
-scan with {: return s.nextToken(); :};
+init with {:  :};
+scan with {: return s.next_Token(); :};
 
 /* terminals */
 
