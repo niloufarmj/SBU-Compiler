@@ -1,0 +1,221 @@
+package compiler;
+import java_cup.runtime.*;
+
+parser code {:
+     LexerP s;
+     parser(LexerP s){ this.s=s; }
+     protected void report_expected_token_ids(){ }
+:}
+
+init with {:  :};
+scan with {: return s.next_token(); :};
+
+/* terminals */
+
+//Reserved Words:
+terminal INTEGER, DOUBLE, BOOLEAN, STRING, VOID;
+terminal CLASS, IMPORT, FUNCTION, LINE;
+terminal FOR, WHILE, IF, ELSE, BREAK, CONTINUE;
+terminal RETURN, NEW, THIS, NULL, NEWARRAY;
+terminal READINTEGER, READLINE, PRINT, DTOI, ITOD, BTOI, ITOB;
+terminal PRIVATE, PUBLIC;
+
+
+//Relational Symbols:
+terminal EQUAL, NOTEQUAL, LESS, GREATER, LESSEQUAL, GREATEREQUAL;
+
+//Ligical Symbols:
+terminal AND, OR, NOT;
+
+//Arithmitic symbols:
+terminal DIV, MUL, ADD, SUB, MOD;
+
+//Assignment Symbols
+terminal ASSIGN, ASSIGNADD, ASSIGNSUB, ASSIGNMUL, ASSIGNDIV;
+
+//Other Symbols:
+terminal SEMICOLON, COMMA, LEFTBRACKET, RIGHTBRACKET;
+terminal DOT, LEFTPARANTHESIS, RIGHTPARANTHESIS, LEFTCURLY, RIGHTCURLY;
+
+//IDENTIFIER:
+terminal IDENTIFIER, DEFINE;
+
+//Constants:
+terminal INTCONST, DOUBLECONST, STRINGCONST, BOOLCONST;
+
+
+/* Non terminals */
+
+nonterminal Program, Macro;
+
+// declarations AND types
+nonterminal Decl, VariableDecl, FunctionDecl, ClassDecl;
+
+// DEFINE Variable
+nonterminal Variable;
+
+// types of definitions except VOID
+nonterminal Type;
+
+// args of functions
+nonterminal Formals;
+
+//statement block
+nonterminal StatementBlock;
+
+// methods AND variables in class
+nonterminal Field;
+
+//PUBLIC OR PRIVATE
+nonterminal AccessMode;
+
+//statement
+nonterminal Statement;
+nonterminal IfStatement, WhileStatement, ForStatement, ElsePrime;
+nonterminal BreakStatement, ContinueStatement, ReturnStatement ,PrintStatement;
+
+//expressions
+nonterminal Expression;
+nonterminal LValue, Constant, Call, Actuals;
+
+//plus
+nonterminal DeclPlus, MacroPlus, ExpressionPlusComma, StatementPlus
+            , IdPlus, FieldPlus, VariableDeclPlus, VariablePlusComma;
+
+/**/
+
+/* precedence  */
+precedence left ELSE;
+precedence left LEFTBRACKET;
+precedence left COMMA;
+precedence left ASSIGN, ASSIGNADD, ASSIGNSUB, ASSIGNMUL, ASSIGNSUB;
+precedence left OR;
+precedence left AND;
+precedence left EQUAL, NOTEQUAL;
+precedence left LESS, GREATER, LESSEQUAL, GREATEREQUAL;
+precedence left ADD, SUB;
+precedence left MUL, DIV, MOD;
+precedence left NOT;
+precedence left LEFTPARANTHESIS, RIGHTPARANTHESIS, DOT;
+/**/
+
+start with Program;
+
+Program  ::= DeclPlus
+           | MacroPlus DeclPlus;
+
+Decl ::= VariableDecl
+       | FunctionDecl
+       | ClassDecl;
+
+DeclPlus ::= DeclPlus Decl
+           | Decl;
+
+Macro ::= IMPORT STRINGCONST
+        | DEFINE;
+
+MacroPlus ::= MacroPlus Macro
+            | Macro;
+
+VariableDecl ::= Variable SEMICOLON;
+
+VariableDeclPlus ::= VariableDeclPlus VariableDecl
+                    | VariableDecl;
+
+Variable ::= Type IDENTIFIER | IDENTIFIER IDENTIFIER;
+
+Type ::= INTEGER
+       | DOUBLE
+       | BOOLEAN
+       | STRING
+       | Type LEFTBRACKET RIGHTBRACKET | IDENTIFIER LEFTBRACKET RIGHTBRACKET;
+
+FunctionDecl ::= Type IDENTIFIER LEFTPARANTHESIS Formals RIGHTPARANTHESIS StatementBlock
+               | IDENTIFIER IDENTIFIER LEFTPARANTHESIS Formals RIGHTPARANTHESIS StatementBlock
+               | VOID IDENTIFIER LEFTPARANTHESIS Formals RIGHTPARANTHESIS StatementBlock;
+
+Formals ::=  VariablePlusComma |;
+
+VariablePlusComma ::= VariablePlusComma COMMA Variable | Variable;
+
+
+ClassDecl ::= CLASS IDENTIFIER LEFTCURLY FieldPlus  RIGHTCURLY
+            | CLASS IDENTIFIER LEFTCURLY RIGHTCURLY;
+
+FieldPlus ::= FieldPlus Field | Field;
+
+Field ::= AccessMode VariableDecl | AccessMode FunctionDecl;
+
+AccessMode ::= PRIVATE | PUBLIC |;
+
+StatementBlock ::= LEFTCURLY RIGHTCURLY
+            | LEFTCURLY VariableDeclPlus RIGHTCURLY
+            | LEFTCURLY StatementPlus RIGHTCURLY
+            | LEFTCURLY VariableDeclPlus StatementPlus RIGHTCURLY;
+
+StatementPlus ::= StatementPlus Statement
+            | Statement;
+
+Statement ::= Expression SEMICOLON | SEMICOLON | IfStatement | WhileStatement | ForStatement
+            | BreakStatement | ContinueStatement | ReturnStatement | PrintStatement
+            | StatementBlock;
+
+IfStatement ::= IF LEFTPARANTHESIS Expression RIGHTPARANTHESIS Statement ElsePrime;
+
+ElsePrime ::= ELSE Statement | ;
+
+WhileStatement::= WHILE LEFTPARANTHESIS Expression RIGHTPARANTHESIS Statement;
+
+ForStatement ::= FOR LEFTPARANTHESIS SEMICOLON Expression SEMICOLON RIGHTPARANTHESIS Statement
+               | FOR LEFTPARANTHESIS Expression SEMICOLON Expression SEMICOLON RIGHTPARANTHESIS Statement
+               | FOR LEFTPARANTHESIS  SEMICOLON Expression SEMICOLON Expression RIGHTPARANTHESIS Statement
+               | FOR LEFTPARANTHESIS Expression SEMICOLON Expression SEMICOLON Expression RIGHTPARANTHESIS Statement;
+
+ReturnStatement ::= RETURN SEMICOLON
+                  | RETURN Expression SEMICOLON;
+
+BreakStatement ::= BREAK SEMICOLON;
+
+ContinueStatement ::= CONTINUE SEMICOLON;
+
+PrintStatement ::= PRINT LEFTPARANTHESIS ExpressionPlusComma RIGHTPARANTHESIS SEMICOLON;
+
+ExpressionPlusComma ::= ExpressionPlusComma COMMA Expression
+                      | Expression ;
+
+
+Expression ::= LValue ASSIGN Expression | IDENTIFIER ASSIGN Expression
+             | LValue ASSIGNADD Expression | IDENTIFIER ASSIGNADD Expression
+             | LValue ASSIGNSUB Expression | IDENTIFIER ASSIGNSUB Expression
+             | LValue ASSIGNMUL Expression | IDENTIFIER ASSIGNMUL Expression
+             | LValue ASSIGNDIV Expression | IDENTIFIER ASSIGNDIV Expression
+             | Constant | LValue | IDENTIFIER
+             | THIS | Call
+             | LEFTPARANTHESIS Expression RIGHTPARANTHESIS
+             | Expression ADD Expression | Expression SUB Expression
+             | Expression MUL Expression | Expression DIV Expression | Expression MOD Expression
+             | SUB Expression
+             | Expression LESS Expression | Expression LESSEQUAL Expression
+             | Expression GREATER Expression | Expression GREATEREQUAL Expression
+             | Expression EQUAL Expression | Expression NOTEQUAL Expression
+             | Expression AND Expression | Expression OR Expression | NOT Expression
+             | READINTEGER LEFTPARANTHESIS RIGHTPARANTHESIS
+             | READLINE LEFTPARANTHESIS RIGHTPARANTHESIS
+             | NEW IDENTIFIER | NEWARRAY LEFTPARANTHESIS Expression COMMA Type RIGHTPARANTHESIS
+             | NEWARRAY LEFTPARANTHESIS Expression COMMA IDENTIFIER RIGHTPARANTHESIS
+             | ITOD LEFTPARANTHESIS Expression RIGHTPARANTHESIS
+             | DTOI LEFTPARANTHESIS Expression RIGHTPARANTHESIS
+             | ITOB LEFTPARANTHESIS Expression RIGHTPARANTHESIS
+             | BTOI LEFTPARANTHESIS Expression RIGHTPARANTHESIS
+             | LINE | FUNCTION;
+
+LValue ::= Expression DOT IDENTIFIER
+         | Expression LEFTBRACKET Expression RIGHTBRACKET
+         | IDENTIFIER LEFTBRACKET Expression RIGHTBRACKET;
+
+Call ::= IDENTIFIER LEFTPARANTHESIS Actuals RIGHTPARANTHESIS
+       | Expression DOT IDENTIFIER LEFTPARANTHESIS Actuals RIGHTPARANTHESIS;
+
+Actuals ::= ExpressionPlusComma | ;
+
+Constant ::= INTCONST | DOUBLECONST | BOOLCONST | STRINGCONST | NULL;
